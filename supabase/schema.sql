@@ -133,6 +133,19 @@ alter table public.custom_foods add column if not exists saturated_fat numeric(8
 alter table public.custom_foods add column if not exists sugar numeric(8,2) check(sugar >= 0);
 alter table public.custom_foods add column if not exists sodium_mg numeric(8,2) check(sodium_mg >= 0);
 alter table public.custom_foods add column if not exists data_source text;
+
+-- Strava credentials are stored separately from browser-readable app state.
+-- Only the Edge Function service role may access this table; never add client policies.
+create table if not exists public.strava_connections (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  athlete_id bigint not null,
+  athlete_name text not null,
+  tokens jsonb not null,
+  updated_at timestamptz not null default now()
+);
+alter table public.strava_connections enable row level security;
+revoke all on table public.strava_connections from anon, authenticated;
+grant all on table public.strava_connections to service_role;
 alter table public.meal_log_items add column if not exists fibre numeric(10,2) check(fibre >= 0);
 alter table public.food_prices add column if not exists custom_food_id uuid references public.custom_foods(id) on delete cascade;
 alter table public.food_prices alter column food_id drop not null;

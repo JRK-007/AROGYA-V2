@@ -27,7 +27,34 @@ ICMR-NIN publishes the [Dietary Guidelines for Indians 2024](https://www.nin.res
 - Equipment-aware workout schedule generator, workout logging, fitness history, browser print/save-as-PDF summary, JSON export, and local persistence.
 - English with partial Hindi and Tamil navigation/page-heading translations.
 - Optional Supabase email sign-in and owner-only app-state cloud sync.
+- Google sign-in through Supabase Auth (requires enabling the Google provider in your Supabase project).
+- Strava OAuth connection and recent activity sync through a Supabase Edge Function. Strava tokens remain server-side and are never saved in browser storage.
+- Responsive, collapsible sidebar help card and dismissible, non-blocking status notifications.
+- Debounced local/cloud persistence to keep typing and option changes responsive.
 - Nearby fitness discovery opens a Google Maps search using user-entered location or coordinates provided during browser permission. It needs an internet connection.
+
+## Login and fitness integrations
+
+### Google sign-in
+
+1. Set up Supabase using the steps below.
+2. In Supabase, enable **Authentication → Providers → Google** and enter your Google OAuth client ID and secret. Follow Supabase's Google provider instructions for the required Google Cloud OAuth consent screen and redirect URI.
+3. Add your local and hosted Arogya URLs to **Authentication → URL Configuration → Redirect URLs**. Google login appears in **Profile & Settings → Account & cloud backup**.
+
+Google login is an authentication method for Arogya; it does not by itself connect Google Fit or read watch data.
+
+### Strava
+
+1. Create a Strava API application and set its authorization callback domain/URL to the exact Arogya site origin and path you use (for local development, use your local origin; add the production origin before publishing).
+2. Put the public Strava client ID in `.env.local` as `VITE_STRAVA_CLIENT_ID=...`, then restart the web app.
+3. Apply `supabase/schema.sql` (the `strava_connections` table has no browser access policies), deploy `supabase/functions/strava-oauth`, and set the Edge Function secrets `STRAVA_CLIENT_ID` and `STRAVA_CLIENT_SECRET`. The function also uses the Supabase project URL, anon key, and service-role key available in the Edge Function environment. Never add the Strava client secret or Supabase service-role key to a `VITE_` variable or browser bundle.
+4. Sign in to Arogya and choose **Profile & Settings → Fitness & wearable connections → Connect Strava**. Users can sync their latest 20 activities or disconnect and revoke the Strava authorization.
+
+Strava setup is required before this connection is live. Use the official [Strava authentication documentation](https://developers.strava.com/docs/authentication/) when registering the application and configuring redirect URLs.
+
+### Watch and health-platform coverage
+
+A web page cannot read every watch's on-device data directly. Apple HealthKit access is provided to iOS apps with user permission, and Android Health Connect is an Android on-device API; adding those connections requires native mobile app builds and permission flows. Fitbit has a Web API but requires a registered app and its own OAuth implementation. Garmin's cloud health integration requires access to the Garmin Connect Developer Program. The settings page identifies these provider requirements instead of reporting inactive connections as live. See the official [Apple HealthKit](https://developer.apple.com/documentation/healthkit), [Android Health Connect](https://developer.android.com/health-and-fitness/health-connect), [Fitbit Web API](https://dev.fitbit.com/build/reference/web-api/explore/), and [Garmin Health API](https://developer.garmin.com/gc-developer-program/enterprise/health-api/) documentation before planning those integrations.
 
 ## Location privacy and service
 
