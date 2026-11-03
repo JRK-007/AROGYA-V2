@@ -1,6 +1,6 @@
 export type Sex = 'male' | 'female' | 'unspecified'
 export type Activity = 'sedentary' | 'light' | 'moderate' | 'high' | 'athlete'
-export type Profile = { name: string; age: number; sex: Sex; height: number; weight: number; waist: number; hip: number; neck: number; activity: Activity; goal: string; dietaryPreference:string; workoutMinutes: number; hotWeather: boolean }
+export type Profile = { name: string; birthDate:string; age: number; sex: Sex; height: number; weight: number; waist: number; hip: number; neck: number; activity: Activity; goal: string; dietaryPreference:string; allergies:string; workoutMinutes: number; hotWeather: boolean; trainingLevel:string; trainingLocation:string; workoutDays:number; trainingEquipment:string[]; exerciseLimitations:string; trainingStyle:string }
 export const multipliers: Record<Activity, number> = { sedentary: 1.2, light: 1.375, moderate: 1.55, high: 1.725, athlete: 1.9 }
 const log10 = (x: number) => Math.log(x) / Math.LN10
 export function assess(p: Profile) {
