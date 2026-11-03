@@ -35,3 +35,9 @@ IFCT 2017 electronic reproduction in a product requires written permission from 
 ## Current integration limits
 
 The main food, profile, diary, workout checklist, local storage, Supabase auth/sync, and print report paths are implemented. Nearby gym discovery opens an external Google Maps search using a typed area or browser-provided coordinates; native in-app Places results are not implemented. Multilingual translation, MASLD risk scoring and other full clinical screening suites, saved/favourite meals, full recipe editing, and server-generated/storage-backed PDFs are not implemented yet. The app does not claim to diagnose or treat disease. Health calculations and screenings are informational and should be discussed with a qualified clinician.
+
+## Ownership and license
+
+This project is proprietary. Copyright © 2026 RAHUL KRISHNA J. All rights are reserved. No permission is granted to copy, modify, publish, distribute, sublicense, or create derivative works from this project without the copyright holder's prior written permission. See [LICENSE](LICENSE). Third-party components and public data remain subject to their own licenses and terms.
+
+The GitHub repository should remain private and access should only be granted to people you trust. Private visibility limits who can view the repository, but it cannot prevent an authorized viewer from copying material they can access. The license notice records your rights; it is not a technical access control or a guarantee against infringement.
