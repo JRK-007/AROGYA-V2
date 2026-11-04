@@ -64,10 +64,14 @@ Location detection is user initiated. The browser asks the user first. If they c
 
 1. Create a Supabase project and enable email/password authentication.
 2. Copy `.env.example` to `.env.local` and set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`. Never put a service-role key in this browser app.
-3. Run `supabase/schema.sql` in the Supabase SQL editor.
+3. Run `supabase/schema.sql` for a new project. For an existing project, apply the ordered SQL files in `supabase/migrations/` instead of rerunning the initial schema.
 4. Restart the dev server and open **Profile & Settings → Account & cloud backup**.
 
-Local storage works without Supabase. For a hosted release, configure HTTPS, email confirmation and reset URLs, backups, server monitoring, and privacy notices.
+Every Supabase Auth user gets a separate private account row. Database row-level security binds private records to the signed-in user ID. A browser on a shared device also keeps separate local copies for each account and a guest profile. When a new account has no cloud records, existing guest data stays separate until the user explicitly imports it. Signing out returns to guest mode. This avoids transferring one person's local health history into another account by accident.
+
+The current web client syncs its app snapshot to one row per account in `user_app_state`; the schema also provides domain tables for profile, measurements, meals, foods, workouts, and reports. This is a practical launch baseline for an early user base. Before high-volume production, move growing event history to those relational tables, add a retention/export/deletion workflow, monitor database limits, and test isolation with separate accounts. Do not describe the app as a regulated clinical record system without the required legal, security, and operational controls.
+
+For a hosted release, configure HTTPS, email confirmation and reset URLs, scheduled backups, restore drills, server monitoring, and clear privacy/retention notices. Supabase's RLS guidance recommends explicit per-user access policies and permission grants; the included migration applies those safeguards to account data.
 
 ## Indian CSV format
 
