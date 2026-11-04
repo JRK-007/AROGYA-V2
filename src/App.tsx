@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode, CSSProperties } from 'react'
 import { Activity, Apple, ArrowDownRight, ArrowUpRight, Bell, CalendarDays, Check, ChevronDown, ChevronUp, CircleHelp, ClipboardList, Dumbbell, FileText, Flame, Footprints, HeartPulse, Home, Leaf, Menu, Plus, Search, Settings, ShieldCheck, Sparkles, Target, TrendingUp, UserRound, Utensils, Weight, X } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import { createClient, type AuthSession as Session } from '@supabase/supabase-js'
+import { createClient, type AuthSession as Session, type SupabaseClient } from '@supabase/supabase-js'
 import { assess, bmiLabel, Profile, zones, navyMethod } from './lib/calculations'
 import { Food, foods as initialFoods, isIndiaRegion, type IndiaLocation, type IndiaRegion } from './data/foods'
 import WorkoutPlanner from './components/WorkoutPlanner'
@@ -22,8 +22,25 @@ type BrowserAuth = {
   signInWithOAuth: (options: { provider: string; options?: { redirectTo?: string } }) => Promise<{ error: Error | null }>
   signOut: () => Promise<{ error: Error | null }>
 }
+type AppDatabase = {
+  public: {
+    Tables: {
+      user_app_state: {
+        Row: { user_id: string; state: unknown; updated_at: string }
+        Insert: { user_id: string; state: unknown; updated_at?: string }
+        Update: { user_id?: string; state?: unknown; updated_at?: string }
+        Relationships: []
+      }
+    }
+    Views: {}
+    Functions: {}
+    Enums: {}
+    CompositeTypes: {}
+  }
+}
+type AppSupabaseClient = SupabaseClient<AppDatabase> & { auth: BrowserAuth }
 const supabase=supabaseUrl&&supabaseAnonKey
-  ? createClient(supabaseUrl,supabaseAnonKey) as unknown as ReturnType<typeof createClient> & { auth: BrowserAuth }
+  ? createClient<AppDatabase>(supabaseUrl,supabaseAnonKey) as unknown as AppSupabaseClient
   : null
 
 type DiaryItem = { id: string; foodId: string; name: string; grams: number; mealType:string; kcal: number; protein: number; carbs: number; fat: number; fiber?:number }
